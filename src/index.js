@@ -1,3 +1,6 @@
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
 const express = require('express')
 const { Pool } = require('pg')
 require('dotenv').config()
@@ -13,6 +16,24 @@ const app = express()
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json())
+
+// Configuração do Swagger
+const swaggerOptions = {
+  definition: {
+      openapi: '3.0.0',
+      info: {
+          title: 'API de Alunos',
+          version: '1.0.0',
+          description: 'Uma API para gerenciar alunos',
+      },
+  },
+  apis: ['index.js'], // Substitua 'index.js' pelo nome do arquivo onde você define suas rotas.
+};
+
+const specs = swaggerJsdoc(swaggerOptions);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
 
 app.get('/', (req, res) => {console.log("Olá, mundo")})
 app.get('/alunos', async (req, res) => {
